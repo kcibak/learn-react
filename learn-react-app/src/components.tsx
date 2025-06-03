@@ -1,8 +1,28 @@
 import { useState, useRef, useEffect } from 'react'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import './Dropdown.css'; // Import the CSS file for styles
 
-// Reusable AnimatedUnderlineButton component
-export function AnimatedUnderlineButton({ children, onClick, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+// Reusable AnimatedUnderlineButton component with NavLink support
+export function AnimatedUnderlineButton({ 
+    children, 
+    to, 
+    onClick, 
+    className = '', 
+    ...props 
+}: React.PropsWithChildren<{ to?: string } & React.ButtonHTMLAttributes<HTMLButtonElement>>) {
+    
+    if (to) {
+        return (
+            <NavLink
+                to={to}
+                className={({ isActive }) => `animated-underline-btn${isActive ? ' active' : ''}${className ? ' ' + className : ''}`}
+            >
+                {children}
+                <span className="underline-anim" />
+            </NavLink>
+        );
+    }
+    
     return (
         <button
             className={`animated-underline-btn${className ? ' ' + className : ''}`}
@@ -17,14 +37,14 @@ export function AnimatedUnderlineButton({ children, onClick, className = '', ...
 
 type DropdownProps = {
     options: string[],
-    optionColors?: Record<string, string>
 }
 
-export function Dropdown({ options, optionColors }: DropdownProps){
+export function Dropdown({ options }: DropdownProps){
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState('Select an animal');
+    const [selectedAnimal, setSelectedAnimal] = useState<string | null>(null);
     const timeoutRef = useRef<number | null>(null);
-
+    const navigate = useNavigate();
+    const location = useLocation();
     // Clear timeout on unmount
     useEffect(() => {
         return () => {
@@ -33,7 +53,12 @@ export function Dropdown({ options, optionColors }: DropdownProps){
             }
         };
     }, []);
-
+    // Reset selected animal on Home or About navigation
+    useEffect(() => {
+        if (location.pathname === '/' || location.pathname === '/about') {
+            setSelectedAnimal(null);
+        }
+    }, [location.pathname]);
     // Handle hover for dropdown open/close with delay
     const handleMouseEnter = () => {
         if (timeoutRef.current) {
@@ -42,40 +67,35 @@ export function Dropdown({ options, optionColors }: DropdownProps){
         }
         setIsOpen(true);
     };
-    
     const handleMouseLeave = () => {
         timeoutRef.current = window.setTimeout(() => {
             setIsOpen(false);
         }, 150); // Short delay to allow mouse movement to options
     };
-    
     const handleOptionClick = (option: string) => {
-        setSelectedOption(option);
         setIsOpen(false);
-    };
-
-    return (
+        setSelectedAnimal(option);
+        // Navigate to the selected option's route
+        navigate(`/animals/${option.toLowerCase()}`);
+    };    return (
         <div
-            style={{ position: 'relative', width: '200px' }}
+            className="dropdown-container"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
             <AnimatedUnderlineButton 
                 className={isOpen ? 'active' : ''}
-                style={{ width: '100%' }}
+                style={{ width: '100%', padding: '6px 0', fontSize: '15px' }}
             >
-                {selectedOption} ▼
+                Animals ▼
             </AnimatedUnderlineButton>
-            
             {isOpen && (
                 <ul className="dropdown-list">
                     {options.map((option, index) => (
                         <li
                             key={index}
+                            className={option === selectedAnimal ? 'selected' : ''}
                             onClick={() => handleOptionClick(option)}
-                            style={{
-                                color: optionColors?.[option] || 'black',
-                            }}
                         >
                             {option}
                         </li>
@@ -86,15 +106,15 @@ export function Dropdown({ options, optionColors }: DropdownProps){
     );
 }
 
-// Home and About buttons using the reusable AnimatedUnderlineButton
-export function HomeButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+// Home and About buttons using the reusable AnimatedUnderlineButton with NavLink integration
+export function HomeButton() {
     return (
-        <AnimatedUnderlineButton {...props}>Home</AnimatedUnderlineButton>
+        <AnimatedUnderlineButton to="/">Home</AnimatedUnderlineButton>
     );
 }
 
-export function AboutButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+export function AboutButton() {
     return (
-        <AnimatedUnderlineButton {...props}>About</AnimatedUnderlineButton>
+        <AnimatedUnderlineButton to="/about">About</AnimatedUnderlineButton>
     );
 }

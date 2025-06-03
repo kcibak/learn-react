@@ -5,15 +5,27 @@
   background: none;
   border: none;
   outline: none;
-  padding: 5px 0;
+  padding: 6px 0;
   cursor: pointer;
   color: black;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   text-align: center;
-  min-width: 60px;
+  min-width: 0;
   user-select: none;
   transition: color 0.45s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Remove outline on focus and active states */
+.animated-underline-btn:focus,
+.animated-underline-btn:focus-visible,
+.animated-underline-btn:active {
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+  color: black; /* Prevent color change on click/focus */
 }
 
 /* Make the line thicker and ensure proper vanishing */
@@ -31,22 +43,40 @@
   transition: width 0.45s cubic-bezier(.4,1.5,.5,1);
 }
 
-.animated-underline-btn:hover,
-.animated-underline-btn:focus,
-.animated-underline-btn.active {
+a.animated-underline-btn.active {
   color: blue;
 }
 
-.animated-underline-btn:hover .underline-anim,
-.animated-underline-btn:focus .underline-anim,
-.animated-underline-btn.active .underline-anim {
+a.animated-underline-btn.active .underline-anim {
+  width: 100%;
+}
+
+.animated-underline-btn:hover {
+  color: blue;
+}
+
+.animated-underline-btn:hover .underline-anim {
   width: 100%; /* Expand to full width */
 }
 
+/* Special hover state for dropdown container */
+.dropdown-container:hover .animated-underline-btn .underline-anim {
+  width: 100%; /* Keep underline visible when hovering over entire dropdown area */
+}
+
+.dropdown-container:hover .animated-underline-btn {
+  color: blue; /* Keep text blue when hovering over entire dropdown area */
+}
+
 /* Use the quicker, non-bouncy transition for hiding */
-.animated-underline-btn:not(:hover):not(:focus):not(.active) .underline-anim {
+.animated-underline-btn:not(:hover) .underline-anim {
   width: 0%;
   transition: width 0.45s cubic-bezier(.4,0,.2,1);
+}
+
+/* Override the transition when dropdown container is hovered */
+.dropdown-container:hover .animated-underline-btn .underline-anim {
+  transition: width 0.45s cubic-bezier(.4,1.5,.5,1); /* Use the expand transition */
 }
 
 
@@ -54,7 +84,7 @@
 /* Improved dropdown container styling */
 .dropdown-container {
   position: relative;
-  width: 200px;
+  width: 110px;
   display: inline-block; /* Proper layout */
 }
 
@@ -64,40 +94,53 @@
   top: calc(100% + 8px); /* Space between button and dropdown */
   left: 0;
   right: 0;
-  background: white;
+  background: white; /* Clean white background */
   border: none;
   list-style: none;
-  padding: 0;
+  padding: 4px 0;
   margin: 0;
   z-index: 1000;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   border-radius: 4px; /* Rounded corners */
+  min-width: 110px;
+  font-size: 15px;
 }
 
 .dropdown-list li {
-  padding: 10px;
+  padding: 7px 12px;
   cursor: pointer;
-  border-bottom: 1px solid #eee;
-  color: black;
-  transition: color 0.2s, background 0.2s;
-}
-
-.dropdown-list li:last-child {
-  border-bottom: none;
+  border: none; /* Removed border */
+  color: #333;
+  font-weight: 600; /* Medium bold, less than bold (700) but more than normal (400) */
+  transition: color 0.4s, transform 0.4s; /* Slower transition for smoother effect */
 }
 
 .dropdown-list li:hover {
-  color: #1976d2;
-  background: #f0f0f0;
+  color: blue; /* Text turns blue on hover */
+  transform: translateX(10px); /* Increased rightward shift on hover */
+  background: transparent; /* No background color change */
 }
 
-/* First and last items with rounded corners */
-.dropdown-list li:first-child {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+.dropdown-list li.selected {
+  color: blue;
+  transform: translateX(10px);
+  background: transparent;
 }
 
-.dropdown-list li:last-child {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+/* Specific styles for dropdown focus */
+button.animated-underline-btn::-moz-focus-inner {
+  border: 0;
+}
+
+button.animated-underline-btn:focus {
+  outline: none;
+}
+
+a.animated-underline-btn:focus {
+  outline: none;
+}
+
+/* Remove blue mobile tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
 }

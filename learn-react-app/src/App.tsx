@@ -1,13 +1,14 @@
+import { Routes, Route, Link } from 'react-router-dom'
 import { HomeButton, AboutButton, Dropdown } from './components'
+import Home from './pages/Home'
+import About from './pages/About'
+import Dog from './pages/Dog'
+import Cat from './pages/Cat'
+import Horse from './pages/Horse'
 
 function App() {
   // Dropdown options
-  const options = ['Profile', 'Settings', 'Logout']
-  const optionColors = {
-    Profile: 'blue',
-    Settings: 'green',
-    Logout: 'red'
-  }
+  const options = ['Dog', 'Cat', 'Horse']
 
   return (
     <div
@@ -32,37 +33,44 @@ function App() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
         }}
       >
-        <h1 style={{ 
-          margin: 0, 
-          fontSize: '24px',
-          fontWeight: '600',
-          color: 'blue'
-        }}>
-          Learn React
-        </h1>
+        <Link 
+          to="/" 
+          style={{ 
+            textDecoration: 'none',
+            color: 'inherit'
+          }}
+        >
+          <h1 style={{ 
+            margin: 0, 
+            fontSize: '24px',
+            fontWeight: '600',
+            color: 'blue',
+            cursor: 'pointer',
+            transition: 'color 0.2s ease'
+          }}
+          onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#0056b3'}
+          onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'blue'}
+          >
+            Learn React
+          </h1>
+        </Link>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
           <HomeButton />
           <AboutButton />
-          <Dropdown options={options} optionColors={optionColors} />
+          <Dropdown options={options} />
         </div>
       </header>
       
       {/* Main content area */}
       <main style={{ padding: '40px', flex: 1 }}>
-        <div style={{ 
-          maxWidth: '1200px', 
-          margin: '0 auto',
-          padding: '20px',
-          backgroundColor: 'white',
-          borderRadius: '8px'
-        }}>
-          <h2 style={{ color: '#212529' }}>Welcome to React!!!</h2>
-          <p style={{ color: '#6c757d', lineHeight: 1.6 }}>
-            This is a simple layout to help you practice React concepts. 
-            Feel free to modify and expand on it as you learn.
-          </p>
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/animals/dog" element={<Dog />} />
+          <Route path="/animals/cat" element={<Cat />} />
+          <Route path="/animals/horse" element={<Horse />} />
+        </Routes>
       </main>
     </div>
   )
