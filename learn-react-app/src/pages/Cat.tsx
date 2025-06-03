@@ -1,5 +1,4 @@
 // filepath: src/pages/Cat.tsx
-import React from 'react';
 
 function Cat() {
   return (

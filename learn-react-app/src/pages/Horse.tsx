@@ -1,5 +1,4 @@
 // filepath: src/pages/Horse.tsx
-import React from 'react';
 
 function Horse() {
   return (
